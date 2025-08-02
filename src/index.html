@@ -4,9 +4,29 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="./css/output.css" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="./assets/logo.png" />
   </head>
   <body>
-    <div id="keyboard" class="w-screen h-screen flex items-center justify-center bg-gray-900"></div>
+    <div class="w-screen h-screen flex flex-col items-center justify-center bg-gray-900">
+      <div id="keyboard" class="flex-1 flex items-center justify-center w-full"></div>
+      <div class="flex-none w-full flex flex-col items-center justify-center py-4">
+        <div class="px-4">
+          <h2 class="text-xl font-bold text-slate-300 mb-2">Other Useful Vim Commands</h2>
+          <ul class="grid grid-cols-2 md:grid-cols-3 gap-x-10 gap-y-2 text-gray-200 text-base">
+            <li><span class="font-mono text-blue-300">:w</span> — Save file</li>
+            <li><span class="font-mono text-blue-300">:q</span> — Quit Vim</li>
+            <li><span class="font-mono text-blue-300">:wq</span> — Save and quit</li>
+            <li><span class="font-mono text-blue-300">/foo</span> — Find <span class="font-mono">foo</span> in file</li>
+            <li><span class="font-mono text-blue-300">:%s/foo/bar/g</span> — Replace <span class="font-mono">foo</span> with <span class="font-mono">bar</span> in whole file</li>
+            <li><span class="font-mono text-blue-300">:s/foo/bar/g</span> — Replace <span class="font-mono">foo</span> with <span class="font-mono">bar</span> in current line</li>
+            <li><span class="font-mono text-blue-300">:help</span> — Open Vim help</li>
+            <li><span class="font-mono text-blue-300">0</span> — Go to start of line</li>
+            <li><span class="font-mono text-blue-300">$</span> — Go to end of line</li>
+          </ul>
+          </ul>
+        </div>
+      </div>
+    </div>
     <script src="./js/main.js" defer></script>
   </body>
 </html>
