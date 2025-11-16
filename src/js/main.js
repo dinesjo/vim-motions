@@ -55,21 +55,30 @@ const vimDetails = {
   // Ctrl combinations
   'C-a': 'Increment number under cursor',
   'C-b': 'Page up / scroll back full screen',
+  'C-c': 'Interrupt / cancel current command',
   'C-d': 'Scroll half page down',
   'C-e': 'Scroll down one line',
   'C-f': 'Page down / scroll forward full screen',
   'C-g': 'Show file information',
+  'C-h': 'Backspace (delete char before cursor)',
   'C-i': 'Jump to newer cursor position',
+  'C-j': 'Move down (same as j)',
+  'C-k': 'Digraph entry',
   'C-l': 'Redraw screen',
+  'C-m': 'Enter / move to first char of next line',
   'C-n': 'Next autocomplete suggestion',
   'C-o': 'Jump to older cursor position',
   'C-p': 'Previous autocomplete suggestion',
+  'C-q': 'Visual block mode (in some terminals)',
   'C-r': 'Redo',
+  'C-s': 'Stop output (terminal flow control)',
+  'C-t': 'Jump to older tag position',
   'C-u': 'Scroll half page up',
   'C-v': 'Visual block mode',
   'C-w': 'Window commands prefix',
   'C-x': 'Decrement number under cursor',
   'C-y': 'Scroll up one line',
+  'C-z': 'Suspend Vim',
 };
 
 
@@ -151,7 +160,7 @@ const ctrlVimHints = {
   'C': 'interrupt',
   'A': 'incr num',
   'X': 'decr num',
-  'T': '',
+  'T': 'tag jump',
   'S': '',
   'Q': '',
   'V': 'visual block',
@@ -159,9 +168,10 @@ const ctrlVimHints = {
   'K': '',
   'B': 'page up',
   'W': 'window',
-  'Z': '',
-  'M': '',
+  'Z': 'suspend',
+  'M': 'newline',
   'I': 'newer pos',
+  'H': 'backspace',
 };
 
 const rows = [
