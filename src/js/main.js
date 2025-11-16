@@ -407,18 +407,20 @@ window.addEventListener('keydown', e => {
   }
 
   let changed = false;
-  if (e.key === 'Shift') {
-    if (!shiftDown) {
-      shiftDown = true;
-      changed = true;
-    }
+
+  // Update modifier state from event properties (more reliable than key tracking)
+  const newCtrlDown = e.ctrlKey || e.metaKey;
+  const newShiftDown = e.shiftKey;
+
+  if (newCtrlDown !== ctrlDown) {
+    ctrlDown = newCtrlDown;
+    changed = true;
   }
-  if (e.key === 'Control') {
-    if (!ctrlDown) {
-      ctrlDown = true;
-      changed = true;
-    }
+  if (newShiftDown !== shiftDown) {
+    shiftDown = newShiftDown;
+    changed = true;
   }
+
   if (changed) updateKeyboardForModifiers();
   if (e.repeat) return;
   if (/^[a-zA-Z]$/.test(e.key)) {
@@ -428,18 +430,20 @@ window.addEventListener('keydown', e => {
 
 window.addEventListener('keyup', e => {
   let changed = false;
-  if (e.key === 'Shift') {
-    if (shiftDown) {
-      shiftDown = false;
-      changed = true;
-    }
+
+  // Update modifier state from event properties
+  const newCtrlDown = e.ctrlKey || e.metaKey;
+  const newShiftDown = e.shiftKey;
+
+  if (newCtrlDown !== ctrlDown) {
+    ctrlDown = newCtrlDown;
+    changed = true;
   }
-  if (e.key === 'Control') {
-    if (ctrlDown) {
-      ctrlDown = false;
-      changed = true;
-    }
+  if (newShiftDown !== shiftDown) {
+    shiftDown = newShiftDown;
+    changed = true;
   }
+
   if (changed) updateKeyboardForModifiers();
   if (/^[a-zA-Z]$/.test(e.key)) {
     unhighlightKey(e.key);
