@@ -25,7 +25,7 @@ const vimDetails = {
   'l': 'Right',
   'L': 'Bottom of screen',
   'm': 'Set mark (m{a-z})',
-  'M': 'Mode cursor to middle vertically',
+  'M': 'Move cursor to middle of screen',
   'n': 'Next search result',
   'N': 'Previous search result',
   'o': 'Open line below',
@@ -33,7 +33,7 @@ const vimDetails = {
   'p': 'Paste after cursor',
   'P': 'Paste before cursor',
   'q': 'Record macro',
-  'Q': '',
+  'Q': 'Ex mode',
   'r': 'Replace one character',
   'R': 'Replace mode',
   's': 'Substitute character',
@@ -51,7 +51,25 @@ const vimDetails = {
   'y': 'Yank (copy)',
   'Y': 'Yank line',
   'z': 'Scroll/center screen',
-  'Z': 'Save and quit',
+  'Z': 'Prefix for ZZ (save+quit) or ZQ (quit)',
+  // Ctrl combinations
+  'C-a': 'Increment number under cursor',
+  'C-b': 'Page up / scroll back full screen',
+  'C-d': 'Scroll half page down',
+  'C-e': 'Scroll down one line',
+  'C-f': 'Page down / scroll forward full screen',
+  'C-g': 'Show file information',
+  'C-i': 'Jump to newer cursor position',
+  'C-l': 'Redraw screen',
+  'C-n': 'Next autocomplete suggestion',
+  'C-o': 'Jump to older cursor position',
+  'C-p': 'Previous autocomplete suggestion',
+  'C-r': 'Redo',
+  'C-u': 'Scroll half page up',
+  'C-v': 'Visual block mode',
+  'C-w': 'Window commands prefix',
+  'C-x': 'Decrement number under cursor',
+  'C-y': 'Scroll up one line',
 };
 
 
@@ -120,29 +138,30 @@ const shiftVimHints = {
 // Vim motion hints for Ctrl+key (visual clues for beginners)
 const ctrlVimHints = {
   'R': 'redo',
-  'F': '',
-  'D': 'scroll down',
-  'U': 'scroll up',
-  'O': '',
-  'G': '',
-  'E': '',
-  'Y': '',
-  'P': '',
-  'N': '',
+  'F': 'page down',
+  'D': 'half down',
+  'U': 'half up',
+  'O': 'older pos',
+  'G': 'file info',
+  'E': 'scroll ↓',
+  'Y': 'scroll ↑',
+  'P': 'prev auto',
+  'N': 'next auto',
   'L': 'redraw',
   'C': 'interrupt',
-  'A': '',
-  'X': '',
+  'A': 'incr num',
+  'X': 'decr num',
   'T': '',
   'S': '',
   'Q': '',
   'V': 'visual block',
   'J': '',
   'K': '',
-  'B': '',
-  'W': '',
+  'B': 'page up',
+  'W': 'window',
   'Z': '',
   'M': '',
+  'I': 'newer pos',
 };
 
 const rows = [
@@ -277,13 +296,13 @@ function updateKeyboardForModifiers() {
   pressedKeys.forEach(upper => {
     const ref = keyRefs[upper];
     if (ref && ref.tooltip) {
-      let tipKey = upper;
-      if (ctrlDown && shiftDown) tipKey = upper;
-      else if (ctrlDown) tipKey = upper.toLowerCase();
+      let tipKey;
+      if (ctrlDown && shiftDown) tipKey = `C-${upper.toLowerCase()}`;
+      else if (ctrlDown) tipKey = `C-${upper.toLowerCase()}`;
       else if (shiftDown) tipKey = upper;
       else tipKey = upper.toLowerCase();
       let detail = vimDetails[tipKey];
-      if (ctrlDown && !detail) detail = `Ctrl+${upper}`;
+      if (!detail && ctrlDown) detail = `Ctrl+${upper}`;
       if (detail) {
         ref.tooltip.textContent = detail;
         ref.tooltip.style.opacity = '1';
@@ -331,14 +350,14 @@ function highlightKey(letter) {
     const ref = keyRefs[upper];
     if (ref && ref.tooltip) {
       // Determine which tooltip to show based on modifiers
-      let tipKey = letter;
-      if (ctrlDown && shiftDown) tipKey = upper;
-      else if (ctrlDown) tipKey = letter.toLowerCase();
+      let tipKey;
+      if (ctrlDown && shiftDown) tipKey = `C-${upper.toLowerCase()}`;
+      else if (ctrlDown) tipKey = `C-${upper.toLowerCase()}`;
       else if (shiftDown) tipKey = upper;
       else tipKey = letter.toLowerCase();
       let detail = vimDetails[tipKey];
       // Fallback for Ctrl: show "Ctrl+<letter>" if no detail
-      if (ctrlDown && !detail) detail = `Ctrl+${upper}`;
+      if (!detail && ctrlDown) detail = `Ctrl+${upper}`;
       if (detail) {
         ref.tooltip.textContent = detail;
         ref.tooltip.style.opacity = '1';
