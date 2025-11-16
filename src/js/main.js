@@ -25,7 +25,7 @@ const vimDetails = {
   'l': 'Right',
   'L': 'Bottom of screen',
   'm': 'Set mark (m{a-z})',
-  'M': 'Mode cursor to middle vertically',
+  'M': 'Move cursor to middle of screen',
   'n': 'Next search result',
   'N': 'Previous search result',
   'o': 'Open line below',
@@ -33,7 +33,7 @@ const vimDetails = {
   'p': 'Paste after cursor',
   'P': 'Paste before cursor',
   'q': 'Record macro',
-  'Q': '',
+  'Q': 'Ex mode',
   'r': 'Replace one character',
   'R': 'Replace mode',
   's': 'Substitute character',
@@ -51,7 +51,34 @@ const vimDetails = {
   'y': 'Yank (copy)',
   'Y': 'Yank line',
   'z': 'Scroll/center screen',
-  'Z': 'Save and quit',
+  'Z': 'Prefix for ZZ (save+quit) or ZQ (quit)',
+  // Ctrl combinations
+  'C-a': 'Increment number under cursor',
+  'C-b': 'Page up / scroll back full screen',
+  'C-c': 'Interrupt / cancel current command',
+  'C-d': 'Scroll half page down',
+  'C-e': 'Scroll down one line',
+  'C-f': 'Page down / scroll forward full screen',
+  'C-g': 'Show file information',
+  'C-h': 'Backspace (delete char before cursor)',
+  'C-i': 'Jump to newer cursor position',
+  'C-j': 'Move down (same as j)',
+  'C-k': 'Digraph entry',
+  'C-l': 'Redraw screen',
+  'C-m': 'Enter / move to first char of next line',
+  'C-n': 'Next autocomplete suggestion',
+  'C-o': 'Jump to older cursor position',
+  'C-p': 'Previous autocomplete suggestion',
+  'C-q': 'Visual block mode (in some terminals)',
+  'C-r': 'Redo',
+  'C-s': 'Stop output (terminal flow control)',
+  'C-t': 'Jump to older tag position',
+  'C-u': 'Scroll half page up',
+  'C-v': 'Visual block mode',
+  'C-w': 'Window commands prefix',
+  'C-x': 'Decrement number under cursor',
+  'C-y': 'Scroll up one line',
+  'C-z': 'Suspend Vim',
 };
 
 
@@ -120,29 +147,31 @@ const shiftVimHints = {
 // Vim motion hints for Ctrl+key (visual clues for beginners)
 const ctrlVimHints = {
   'R': 'redo',
-  'F': '',
-  'D': 'scroll down',
-  'U': 'scroll up',
-  'O': '',
-  'G': '',
-  'E': '',
-  'Y': '',
-  'P': '',
-  'N': '',
+  'F': 'page down',
+  'D': 'half down',
+  'U': 'half up',
+  'O': 'older pos',
+  'G': 'file info',
+  'E': 'scroll ↓',
+  'Y': 'scroll ↑',
+  'P': 'prev auto',
+  'N': 'next auto',
   'L': 'redraw',
   'C': 'interrupt',
-  'A': '',
-  'X': '',
-  'T': '',
+  'A': 'incr num',
+  'X': 'decr num',
+  'T': 'tag jump',
   'S': '',
   'Q': '',
   'V': 'visual block',
   'J': '',
   'K': '',
-  'B': '',
-  'W': '',
-  'Z': '',
-  'M': '',
+  'B': 'page up',
+  'W': 'window',
+  'Z': 'suspend',
+  'M': 'newline',
+  'I': 'newer pos',
+  'H': 'backspace',
 };
 
 const rows = [
@@ -277,13 +306,13 @@ function updateKeyboardForModifiers() {
   pressedKeys.forEach(upper => {
     const ref = keyRefs[upper];
     if (ref && ref.tooltip) {
-      let tipKey = upper;
-      if (ctrlDown && shiftDown) tipKey = upper;
-      else if (ctrlDown) tipKey = upper.toLowerCase();
+      let tipKey;
+      if (ctrlDown && shiftDown) tipKey = `C-${upper.toLowerCase()}`;
+      else if (ctrlDown) tipKey = `C-${upper.toLowerCase()}`;
       else if (shiftDown) tipKey = upper;
       else tipKey = upper.toLowerCase();
       let detail = vimDetails[tipKey];
-      if (ctrlDown && !detail) detail = `Ctrl+${upper}`;
+      if (!detail && ctrlDown) detail = `Ctrl+${upper}`;
       if (detail) {
         ref.tooltip.textContent = detail;
         ref.tooltip.style.opacity = '1';
@@ -331,14 +360,14 @@ function highlightKey(letter) {
     const ref = keyRefs[upper];
     if (ref && ref.tooltip) {
       // Determine which tooltip to show based on modifiers
-      let tipKey = letter;
-      if (ctrlDown && shiftDown) tipKey = upper;
-      else if (ctrlDown) tipKey = letter.toLowerCase();
+      let tipKey;
+      if (ctrlDown && shiftDown) tipKey = `C-${upper.toLowerCase()}`;
+      else if (ctrlDown) tipKey = `C-${upper.toLowerCase()}`;
       else if (shiftDown) tipKey = upper;
       else tipKey = letter.toLowerCase();
       let detail = vimDetails[tipKey];
       // Fallback for Ctrl: show "Ctrl+<letter>" if no detail
-      if (ctrlDown && !detail) detail = `Ctrl+${upper}`;
+      if (!detail && ctrlDown) detail = `Ctrl+${upper}`;
       if (detail) {
         ref.tooltip.textContent = detail;
         ref.tooltip.style.opacity = '1';
@@ -378,18 +407,20 @@ window.addEventListener('keydown', e => {
   }
 
   let changed = false;
-  if (e.key === 'Shift') {
-    if (!shiftDown) {
-      shiftDown = true;
-      changed = true;
-    }
+
+  // Update modifier state from event properties (standard best practice)
+  const newCtrlDown = e.ctrlKey;
+  const newShiftDown = e.shiftKey;
+
+  if (newCtrlDown !== ctrlDown) {
+    ctrlDown = newCtrlDown;
+    changed = true;
   }
-  if (e.key === 'Control') {
-    if (!ctrlDown) {
-      ctrlDown = true;
-      changed = true;
-    }
+  if (newShiftDown !== shiftDown) {
+    shiftDown = newShiftDown;
+    changed = true;
   }
+
   if (changed) updateKeyboardForModifiers();
   if (e.repeat) return;
   if (/^[a-zA-Z]$/.test(e.key)) {
@@ -399,18 +430,20 @@ window.addEventListener('keydown', e => {
 
 window.addEventListener('keyup', e => {
   let changed = false;
-  if (e.key === 'Shift') {
-    if (shiftDown) {
-      shiftDown = false;
-      changed = true;
-    }
+
+  // Update modifier state from event properties
+  const newCtrlDown = e.ctrlKey;
+  const newShiftDown = e.shiftKey;
+
+  if (newCtrlDown !== ctrlDown) {
+    ctrlDown = newCtrlDown;
+    changed = true;
   }
-  if (e.key === 'Control') {
-    if (ctrlDown) {
-      ctrlDown = false;
-      changed = true;
-    }
+  if (newShiftDown !== shiftDown) {
+    shiftDown = newShiftDown;
+    changed = true;
   }
+
   if (changed) updateKeyboardForModifiers();
   if (/^[a-zA-Z]$/.test(e.key)) {
     unhighlightKey(e.key);
