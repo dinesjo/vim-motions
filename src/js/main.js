@@ -408,8 +408,8 @@ window.addEventListener('keydown', e => {
 
   let changed = false;
 
-  // Update modifier state from event properties (more reliable than key tracking)
-  const newCtrlDown = e.ctrlKey || e.metaKey;
+  // Update modifier state from event properties (standard best practice)
+  const newCtrlDown = e.ctrlKey;
   const newShiftDown = e.shiftKey;
 
   if (newCtrlDown !== ctrlDown) {
@@ -432,7 +432,7 @@ window.addEventListener('keyup', e => {
   let changed = false;
 
   // Update modifier state from event properties
-  const newCtrlDown = e.ctrlKey || e.metaKey;
+  const newCtrlDown = e.ctrlKey;
   const newShiftDown = e.shiftKey;
 
   if (newCtrlDown !== ctrlDown) {
