@@ -8,26 +8,93 @@
     <title>Interactive Vim Cheat Sheet</title>
   </head>
   <body>
-    <div class="w-screen h-screen flex flex-col items-center justify-center bg-gray-900">
-      <div id="keyboard" class="flex-1 flex items-center justify-center w-full"></div>
-      <div class="flex-none w-full flex flex-col items-center justify-center py-4">
-        <div class="px-4">
-          <h2 class="text-xl font-bold text-slate-300 mb-2">Other Useful Vim Commands</h2>
-          <ul class="grid grid-cols-2 md:grid-cols-3 gap-x-10 gap-y-2 text-gray-200 text-base">
-            <li><span class="font-mono text-blue-300">:w</span> — Save file</li>
-            <li><span class="font-mono text-blue-300">:q</span> — Quit Vim</li>
-            <li><span class="font-mono text-blue-300">:wq</span> — Save and quit</li>
-            <li><span class="font-mono text-blue-300">/foo</span> — Find <span class="font-mono">foo</span> in file</li>
-            <li><span class="font-mono text-blue-300">:%s/foo/bar/g</span> — Replace <span class="font-mono">foo</span> with <span class="font-mono">bar</span> in whole file</li>
-            <li><span class="font-mono text-blue-300">:s/foo/bar/g</span> — Replace <span class="font-mono">foo</span> with <span class="font-mono">bar</span> in current line</li>
-            <li><span class="font-mono text-blue-300">:help</span> — Open Vim help</li>
-            <li><span class="font-mono text-blue-300">0</span> — Go to start of line</li>
-            <li><span class="font-mono text-blue-300">$</span> — Go to end of line</li>
+    <main class="min-h-screen w-screen overflow-x-hidden bg-slate-950 text-slate-100">
+      <div class="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-4 px-4 py-5 lg:px-6">
+        <header class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p class="font-mono text-xs uppercase tracking-[0.28em] text-cyan-300">Interactive Vim Cheat Sheet</p>
+            <h1 class="mt-1 text-3xl font-black tracking-tight text-white md:text-4xl">Vim motions under your fingers</h1>
+          </div>
+          <div id="modifier-controls" class="flex items-center gap-2 self-start sm:self-auto"></div>
+        </header>
+
+        <section class="grid flex-1 grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_430px]">
+          <div class="flex min-h-[520px] flex-col rounded-lg border border-slate-700/80 bg-slate-900/80 shadow-2xl shadow-slate-950/40">
+            <div class="grid gap-3 border-b border-slate-700/80 p-4 md:grid-cols-[minmax(0,1fr)_minmax(260px,360px)]">
+              <div>
+                <h2 class="text-sm font-bold uppercase tracking-[0.22em] text-slate-300">Keys</h2>
+                <div id="command-stream" class="mt-3 flex min-h-12 flex-wrap items-center gap-2 rounded bg-slate-950/80 px-3 py-2 font-mono text-sm text-slate-300"></div>
+              </div>
+              <div class="rounded bg-cyan-950/40 px-3 py-3">
+                <p id="command-name" class="text-sm font-bold text-cyan-100">Ready</p>
+                <p id="command-detail" class="mt-1 text-sm leading-5 text-slate-300">Normal mode</p>
+              </div>
+            </div>
+            <div id="keyboard" class="flex flex-1 items-center justify-center overflow-hidden px-2 py-8"></div>
+          </div>
+
+          <aside class="flex min-h-[520px] flex-col rounded-lg border border-slate-700/80 bg-slate-900/80 shadow-2xl shadow-slate-950/40">
+            <div class="flex items-center justify-between gap-3 border-b border-slate-700/80 p-4">
+              <div>
+                <h2 class="text-sm font-bold uppercase tracking-[0.22em] text-slate-300">Mini Buffer</h2>
+                <p id="editor-status" class="mt-1 font-mono text-xs text-cyan-300">NORMAL</p>
+              </div>
+              <button id="reset-editor" class="rounded border border-slate-600 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-slate-300 transition hover:border-cyan-300 hover:text-white">Reset</button>
+            </div>
+            <div id="mini-editor" class="min-h-[280px] flex-1 overflow-auto bg-slate-950 p-4 font-mono text-sm leading-7 text-slate-200"></div>
+            <div id="mini-commandline" class="min-h-10 border-t border-slate-800 bg-slate-950 px-4 py-2 font-mono text-sm text-cyan-100"></div>
+          </aside>
+        </section>
+
+        <section class="pb-2">
+          <h2 class="mb-2 text-sm font-bold uppercase tracking-[0.22em] text-slate-300">Try These Commands</h2>
+          <ul class="grid gap-2 text-sm text-gray-200 sm:grid-cols-2 lg:grid-cols-3">
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command=":w"><span class="font-mono text-cyan-300">:w</span> - Save file</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="_"><span class="font-mono text-cyan-300">_</span> - First non-blank</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="g_"><span class="font-mono text-cyan-300">g_</span> - Last non-blank</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="^"><span class="font-mono text-cyan-300">^</span> - First non-blank on line</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="+"><span class="font-mono text-cyan-300">+</span> - Next line, first non-blank</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="-"><span class="font-mono text-cyan-300">-</span> - Previous line, first non-blank</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="5|"><span class="font-mono text-cyan-300">5|</span> - Go to column five</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="3w"><span class="font-mono text-cyan-300">3w</span> - Move three words</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="ge"><span class="font-mono text-cyan-300">ge</span> - Previous word end</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="gM"><span class="font-mono text-cyan-300">gM</span> - Middle of line</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="H"><span class="font-mono text-cyan-300">H</span> - Top visible line</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="M"><span class="font-mono text-cyan-300">M</span> - Middle visible line</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="50%"><span class="font-mono text-cyan-300">50%</span> - Go halfway through file</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="%"><span class="font-mono text-cyan-300">%</span> - Match bracket</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="}"><span class="font-mono text-cyan-300">}</span> - Next paragraph</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command=")"><span class="font-mono text-cyan-300">)</span> - Next sentence</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="]]"><span class="font-mono text-cyan-300">]]</span> - Next section start</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="]["><span class="font-mono text-cyan-300">][</span> - Next section end</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="viw"><span class="font-mono text-cyan-300">viw</span> - Visual inner word</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="vaw"><span class="font-mono text-cyan-300">vaw</span> - Visual a word</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="Vj"><span class="font-mono text-cyan-300">Vj</span> - Visual line down</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-keys="C-v j l"><span class="font-mono text-cyan-300">Ctrl-v jl</span> - Visual block</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="dVw"><span class="font-mono text-cyan-300">dVw</span> - Delete linewise via w</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="daw"><span class="font-mono text-cyan-300">daw</span> - Delete a word</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="das"><span class="font-mono text-cyan-300">das</span> - Delete a sentence</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="ci&quot;"><span class="font-mono text-cyan-300">ci"</span> - Change inside quotes</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="di`"><span class="font-mono text-cyan-300">di`</span> - Delete inside backticks</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="yip"><span class="font-mono text-cyan-300">yip</span> - Yank inner paragraph</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="gUw"><span class="font-mono text-cyan-300">gUw</span> - Uppercase word</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="f("><span class="font-mono text-cyan-300">f(</span> - Find character</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command=";"><span class="font-mono text-cyan-300">;</span> - Repeat find</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-keys="C-r"><span class="font-mono text-cyan-300">Ctrl-r</span> - Redo</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="."><span class="font-mono text-cyan-300">.</span> - Repeat last change</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="/target"><span class="font-mono text-cyan-300">/target</span> - Find target</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="/target/e"><span class="font-mono text-cyan-300">/target/e</span> - Find match end</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="/target/+1"><span class="font-mono text-cyan-300">/target/+1</span> - Find, then next line</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="?target"><span class="font-mono text-cyan-300">?target</span> - Search backward</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="n"><span class="font-mono text-cyan-300">n</span> - Repeat search</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="gn"><span class="font-mono text-cyan-300">gn</span> - Select next match</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="*"><span class="font-mono text-cyan-300">*</span> - Search word forward</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command=":%s/motions/jumps/g"><span class="font-mono text-cyan-300">:%s/foo/bar/g</span> - Replace in file</button></li>
+            <li><button class="command-example w-full rounded border border-slate-700 bg-slate-900/70 px-3 py-2 text-left transition hover:border-cyan-300 hover:bg-slate-800" data-command="$"><span class="font-mono text-cyan-300">$</span> - Go to end of line</button></li>
           </ul>
-          </ul>
-        </div>
+        </section>
       </div>
-    </div>
+    </main>
     <script src="./js/main.js" defer></script>
   </body>
 </html>
