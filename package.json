@@ -5,9 +5,10 @@
   "main": "src/js/main.js",
   "scripts": {
     "start": "npm-run-all --parallel watch:*",
-    "build": "npm run copy:assets && npm run build:css",
+    "build": "npm run copy:assets && npm run build:css && npm run fingerprint:assets",
     "copy:assets": "copyfiles -u 1 \"src/**/*.html\" src/js/**/*.js src/assets/logo.png dist",
     "build:css": "tailwindcss -i ./src/css/input.css -o ./dist/css/output.css --minify",
+    "fingerprint:assets": "node scripts/fingerprint-assets.mjs",
     "watch:css": "tailwindcss -i ./src/css/input.css -o ./src/css/output.css --watch"
   },
   "keywords": [
